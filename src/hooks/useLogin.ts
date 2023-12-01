@@ -1,6 +1,6 @@
 import { useMutation, UseMutationResult } from "react-query";
 import { signInWithEmailAndPassword, UserCredential } from "firebase/auth";
-import { auth } from "../firebaseConfig";
+import { auth } from "../firebase/firebaseConfig";
 
 interface LoginCredentials {
   email: string;

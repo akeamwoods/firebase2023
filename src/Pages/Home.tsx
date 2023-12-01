@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth } from "../AuthContext";
 import { useLogout } from "../hooks/useLogout";
+import { Link } from "react-router-dom";
 
 const Home: React.FC = () => {
   const { currentUser } = useAuth();
@@ -10,8 +11,9 @@ const Home: React.FC = () => {
     <div>
       <h1>Welcome to the Home Page</h1>
       {currentUser ? (
-        <div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           <p>Welcome, {currentUser.email}!</p>
+          <Link to="/products">Products</Link>
           <button onClick={logout}>Logout</button>
         </div>
       ) : (

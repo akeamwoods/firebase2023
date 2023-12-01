@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@firebase/firestore": "^4.4.0",
     "firebase": "^10.7.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.48.2",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.20.0"
   },
