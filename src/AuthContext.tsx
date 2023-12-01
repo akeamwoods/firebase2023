@@ -17,11 +17,7 @@ export const useAuth = () => {
     return context;
 };
 
-interface AuthProviderProps {
-  children: React.ReactNode;
-}
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -31,12 +27,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setLoading(false);
     });
 
-    return unsubscribe; // Unsubscribe on cleanup
+    return unsubscribe;
   }, []);
 
   return (
     <AuthContext.Provider value={{ currentUser, loading }}>
-    {children}
+      {children}
     </AuthContext.Provider>
   );
 };

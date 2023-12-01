@@ -7,13 +7,13 @@ import { useRedirectLoggedInUser } from "../hooks/useRedirectLoggedInUser";
 
 const Signup: React.FC = () => {
   const { loading } = useAuth();
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  useRedirectLoggedInUser(); // Redirects logged-in users away from the login page
+  useRedirectLoggedInUser();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -27,17 +27,15 @@ const Signup: React.FC = () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       navigate("/");
-
-      // Handle successful signup, e.g., redirect or show a success message
     } catch (error) {
       if (error instanceof Error) {
-        setError(error.message); // Set error message from Firebase errors
+        setError(error.message);
       }
     }
   };
 
   if (loading) {
-    return <div>Loading...</div>; // Or any loading spinner component
+    return <div>Loading...</div>;
   }
 
   return (

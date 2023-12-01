@@ -1,47 +1,43 @@
 import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebaseConfig";
 import { Link, useNavigate } from "react-router-dom";
 import { useRedirectLoggedInUser } from "../hooks/useRedirectLoggedInUser";
 import { useAuth } from "../AuthContext";
+import { useLogin } from "../hooks/useLogin";
 
 const Login: React.FC = () => {
   const { loading } = useAuth();
-  const navigate = useNavigate(); // Hook for navigation
+  const loginMutation = useLogin();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
-  useRedirectLoggedInUser(); // Redirects logged-in users away from the login page
+  useRedirectLoggedInUser();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError("");
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate("/");
-      // On successful login, redirect or do something else
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message); // Handle errors like wrong password, user not found, etc.
+    loginMutation.mutate(
+      { email, password },
+      {
+        onSuccess: () => {
+          navigate("/");
+        },
+        onError: (error: Error) => {
+          console.log(error);
+        },
       }
-    }
+    );
   };
 
-  if (loading) {
-    return <div>Loading...</div>; // Or any loading spinner component
+  if (loading || loginMutation.isLoading) {
+    return <div>Loading...</div>;
   }
 
-  if (!auth) {
-    return (
-      <div>Error: Firebase is not initialized. Check your configuration.</div>
-    );
-  }
   return (
     <div>
       <h1>Login</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {loginMutation.isError && (
+        <p style={{ color: "red" }}>{(loginMutation.error as Error).message}</p>
+      )}
       <form onSubmit={handleSubmit}>
         <input
           type="email"
