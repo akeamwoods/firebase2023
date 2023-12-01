@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useUpdateProduct, useDeleteProduct } from "../hooks/useProducts";
 import { ProductType } from "../types/product";
 import { formatPrice } from "../utils/utils";
+import { Card } from "./card/Card";
 
 type ProductCardProps = {
   product: ProductType;
@@ -34,7 +35,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <div className="product-card">
+    <Card>
       {product.imageUrl && <img style={{maxWidth:'200px'}} src={product.imageUrl} alt={product.name} />}
       {isEditing ? (
         <div>
@@ -69,7 +70,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <button onClick={handleDelete}>Delete</button>
         </div>
       )}
-    </div>
+    </Card>
   );
 };
 

@@ -41,14 +41,3 @@
   color: #888;
 }
 
-.product-card {
-  border: 1px solid #ccc;
-  padding: 15px;
-  margin-bottom: 10px;
-}
-
-.product-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 10px;
-}
