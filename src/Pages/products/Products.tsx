@@ -1,6 +1,15 @@
 import { useForm } from "react-hook-form";
 import { useProducts, useAddProduct } from "../../hooks/useProducts";
 import ProductCard from "../../components/ProductCard";
+import { uploadImage } from "../../firebase/products";
+import { ProductType } from "../../types/product";
+
+type FormData = {
+  name: string;
+  description: string;
+  price: number;
+  image: FileList;
+};
 
 const Products = () => {
   const { data: products, isLoading } = useProducts();
@@ -11,10 +20,21 @@ const Products = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm<FormData>();
 
-  const onSubmit = (data) => {
-    addProductMutation.mutate(data);
+  const onSubmit = async (data: FormData) => {
+    const newProductData: Omit<ProductType, "id"> = {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+    };
+
+    if (data.image && data.image[0]) {
+      const imageUrl = await uploadImage(data.image[0]);
+      newProductData.imageUrl = imageUrl;
+    }
+
+    addProductMutation.mutate(newProductData);
     reset();
   };
 
@@ -42,6 +62,8 @@ const Products = () => {
             placeholder="Product Price"
           />
           {errors.price && <span>This field is required</span>}
+
+          <input type="file" {...register("image")} />
 
           <button type="submit">Add Product</button>
         </form>

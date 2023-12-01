@@ -10,20 +10,32 @@ type ProductCardProps = {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editProduct, setEditProduct] = useState(product);
+  const [newImage, setNewImage] = useState<File | null>(null); // New state for the new image
   const updateProductMutation = useUpdateProduct();
   const deleteProductMutation = useDeleteProduct();
 
   const handleEdit = () => {
-    updateProductMutation.mutate(editProduct);
+    const updatedData = {
+      ...editProduct,
+      newImage, // Include the new image if it exists
+    };
+    updateProductMutation.mutate(updatedData);
     setIsEditing(false);
+    setNewImage(null); // Reset the new image state
   };
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setNewImage(event.target.files[0]);
+    }
+  };
   const handleDelete = () => {
-    deleteProductMutation.mutate(product.id);
+    deleteProductMutation.mutate(product);
   };
 
   return (
     <div className="product-card">
+      {product.imageUrl && <img style={{maxWidth:'200px'}} src={product.imageUrl} alt={product.name} />}
       {isEditing ? (
         <div>
           <input
@@ -45,6 +57,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               setEditProduct({ ...editProduct, price: +e.target.value })
             }
           />
+          <input type="file" onChange={handleImageChange} />
           <button onClick={handleEdit}>Save</button>
         </div>
       ) : (
