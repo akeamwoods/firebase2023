@@ -7,7 +7,13 @@ import {
 } from "firebase/firestore";
 import { firestore, storage } from "./firebaseConfig";
 import { ProductType } from "../types/product";
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import { v4 as uuidv4 } from "uuid";
 
 export const addProduct = async (product: ProductType) => {
   await addDoc(collection(firestore, "products"), product);
@@ -27,7 +33,11 @@ export const deleteProduct = async (productId: string) => {
 };
 
 export const uploadImage = async (file) => {
-  const storageRef = ref(storage, `products/${file.name}`);
+  // Generate a unique filename: originalName_timestamp_uuid.extension
+  const fileExtension = file.name.split(".").pop();
+  const uniqueName = `${file.name}_${Date.now()}_${uuidv4()}.${fileExtension}`;
+  const storageRef = ref(storage, `products/${uniqueName}`);
+
   await uploadBytes(storageRef, file);
   return getDownloadURL(storageRef);
 };

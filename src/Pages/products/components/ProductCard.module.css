@@ -1,0 +1,13 @@
+.cardContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  > div {
+    flex: 1;
+  }
+}
+
+.cardContent {
+  flex: 1;
+}

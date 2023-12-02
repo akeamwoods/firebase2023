@@ -5,7 +5,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Products from "./pages/products/Products";
+import ProductsPage from "./pages/products/ProductsPage";
 
 const queryClient = new QueryClient();
 
@@ -27,7 +27,7 @@ const App: React.FC = () => {
               path="/products"
               element={
                 <ProtectedRoute>
-                  <Products />
+                  <ProductsPage />
                 </ProtectedRoute>
               }
             />

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { useUpdateProduct, useDeleteProduct } from "../hooks/useProducts";
-import { ProductType } from "../types/product";
-import { formatPrice } from "../utils/utils";
-import { Card } from "./card/Card";
+import { Card, Button } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useUpdateProduct, useDeleteProduct } from "../../../hooks/useProducts";
+import { ProductType } from "../../../types/product";
+import { formatPrice } from "../../../utils/utils";
+import styles from "./ProductCard.module.css";
 
 type ProductCardProps = {
   product: ProductType;
@@ -11,18 +13,18 @@ type ProductCardProps = {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editProduct, setEditProduct] = useState(product);
-  const [newImage, setNewImage] = useState<File | null>(null); // New state for the new image
+  const [newImage, setNewImage] = useState<File | null>(null);
   const updateProductMutation = useUpdateProduct();
   const deleteProductMutation = useDeleteProduct();
 
   const handleEdit = () => {
     const updatedData = {
       ...editProduct,
-      newImage, // Include the new image if it exists
+      newImage,
     };
     updateProductMutation.mutate(updatedData);
     setIsEditing(false);
-    setNewImage(null); // Reset the new image state
+    setNewImage(null);
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,8 +37,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <Card>
-      {product.imageUrl && <img style={{maxWidth:'200px'}} src={product.imageUrl} alt={product.name} />}
+    <Card
+      extra={formatPrice(product.price)}
+      title={product.name}
+      hoverable
+      className={styles.cardContainer}
+      actions={[
+        <DeleteOutlined key="delete" onClick={handleDelete} />,
+        <EditOutlined key="edit" onClick={() => setIsEditing(true)} />,
+      ]}
+    >
+      {product.imageUrl && (
+        <img
+          style={{ maxWidth: "200px" }}
+          src={product.imageUrl}
+          alt={product.name}
+        />
+      )}
       {isEditing ? (
         <div>
           <input
@@ -59,16 +76,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             }
           />
           <input type="file" onChange={handleImageChange} />
-          <button onClick={handleEdit}>Save</button>
+          <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+          <Button type="primary" onClick={handleEdit}>
+            Save
+          </Button>
         </div>
       ) : (
-        <div>
-          <h3>{product.name}</h3>
-          <p>{product.description}</p>
-          <p>{formatPrice(product.price)}</p>
-          <button onClick={() => setIsEditing(true)}>Edit</button>
-          <button onClick={handleDelete}>Delete</button>
-        </div>
+        <Card.Meta description={product.description} />
       )}
     </Card>
   );

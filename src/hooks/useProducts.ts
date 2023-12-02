@@ -34,7 +34,7 @@ export const useAddProduct = () => {
   );
 };
 
-type UpdateProductType = Omit<ProductType, "id"> & {
+export type UpdateProductType = Omit<ProductType, "id"> & {
   id: string;
   newImage?: File;
 };

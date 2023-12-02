@@ -1,52 +1,38 @@
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Portal } from "../portal/Portal";
-import styles from "./Modal.module.css";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import { usePreventBodyScroll } from "../../hooks/usePreventBodyScroll";
+import { Modal as AntModal } from "antd";
 
 interface ModalProps {
+  title: string;
+  okText?: string;
   onClose: () => void;
+  onOk: () => void;
   children: React.ReactNode;
 }
 
-const backdropVariants = {
-  visible: { opacity: 1 },
-  hidden: { opacity: 0 },
-};
-
-const modalVariants = {
-  visible: { y: "0%", opacity: 1, transition: { duration: 0.3 } },
-  hidden: { y: "-50%", opacity: 0 },
-};
-
-const Modal: React.FC<ModalProps> = ({ onClose, children }) => {
+const Modal: React.FC<ModalProps> = ({
+  onOk,
+  onClose,
+  okText,
+  title,
+  children,
+}) => {
   usePreventBodyScroll(true);
   useKeyPress("Escape", onClose);
 
   return (
     <Portal>
-      <AnimatePresence>
-        <motion.div
-          className={styles.backdrop}
-          variants={backdropVariants}
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
-          onClick={onClose}
-        >
-          <motion.div
-            className={styles.modal}
-            variants={modalVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {children}
-          </motion.div>
-        </motion.div>
-      </AnimatePresence>
+      <AntModal
+        onOk={onOk}
+        open={true}
+        okText={okText}
+        onCancel={onClose}
+        title={title}
+      >
+        {children}
+      </AntModal>
     </Portal>
   );
 };
